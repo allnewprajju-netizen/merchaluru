@@ -29,7 +29,7 @@ export default function Home() {
       {/* Required Connection Anchor Layout Object */}
       <div 
         id="snipcart" 
-        data-api-key="YzgxYjYwNzEtMDZkYi00OGM2LTk4Y2UtMWNmYzY0YjA3MDZkNjM4ODU5NzUzODAzMzg5NTA0" 
+        data-api-key="ZjM0MmQ1OWItMWRkYi00NDVmLWE4ODUtM2U2MzkxM2Q0MjU0NjM5MTc0NTI2NDU3Mzk4MjI3" 
         data-config-modal-style="side"
         hidden
       ></div>
