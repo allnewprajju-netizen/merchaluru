@@ -1,43 +1,36 @@
 "use client";
 
-import Script from "next/script";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  
-  // DIRECT SCRIPT HANDLING MANIFEST: Manual trigger via native window mapping
-  const triggerCartCheckout = () => {
-    // Explicitly target the browser's global window variable
-    const targetWindow = window as any;
-    
-    if (targetWindow.Snipcart) {
-      try {
-        targetWindow.Snipcart.api.cart.items.add({
-          id: "blr-tee-01",
-          name: "Oversized BLR Tee",
-          price: 799,
-          url: "/", // Targets home path for pricing validity rules
-          quantity: 1
-        });
-      } catch (validationError) {
-        console.error("Snipcart core validation failed:", validationError);
-      }
-    } else {
-      console.warn("Snipcart runtime engine is still downloading from CDN.");
+  const [cartLoaded, setCartLoaded] = useState(false);
+
+  useEffect(() => {
+    // Inject Stylesheet safely into browser head
+    if (!document.getElementById("snip-css")) {
+      const link = document.createElement("link");
+      link.id = "snip-css";
+      link.rel = "stylesheet";
+      link.href = "https://snipcart.com";
+      document.head.appendChild(link);
     }
-  };
+
+    // Inject Production Engine Script into page frame
+    if (!document.getElementById("snip-js")) {
+      const script = document.createElement("script");
+      script.id = "snip-js";
+      script.src = "https://snipcart.com";
+      script.async = true;
+      script.onload = () => setCartLoaded(true);
+      document.body.appendChild(script);
+    } else {
+      setCartLoaded(true);
+    }
+  }, []);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-6">
-      {/* 1. Global Layout Styling Sheet */}
-      <link rel="stylesheet" href="https://snipcart.com" />
-      
-      {/* 2. Direct Framework Framework Component Script download */}
-      <Script 
-        src="https://snipcart.com" 
-        strategy="lazyOnload" 
-      />
-
-      {/* 3. Base Verification Connection Node. Input your Personal Public Key string here */}
+    <main style={{ minHeight: "100vh", backgroundColor: "#f9fafb", padding: "48px 24px", fontFamily: "sans-serif" }}>
+      {/* Target initialization hook node */}
       <div 
         id="snipcart" 
         data-api-key="YzgxYjYwNzEtMDZkYi00OGM2LTk4Y2UtMWNmYzY0YjA3MDZkNjM4ODU5NzUzODAzMzg5NTA0" 
@@ -45,41 +38,40 @@ export default function Home() {
         hidden
       ></div>
 
-      {/* Storefront Layout Interface Header */}
-      <header className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+      <header style={{ maxWidth: "28rem", margin: "0 auto 48px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "2.25rem", fontWeight: 800, color: "#111827", marginBottom: "8px" }}>
           Bengaluru Merch Lab
         </h1>
-        <p className="mt-2 text-lg text-gray-600">
-          Premium streetwear. Linked via Client Window SDK API layer.
+        <p style={{ color: "#4b5563", fontSize: "1.125rem" }}>
+          Premium streetwear store sandbox.
         </p>
       </header>
 
-      {/* Product Display Container Block */}
-      <section className="max-w-4xl mx-auto flex justify-center">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6 w-full max-w-sm flex flex-col justify-between">
-          <div>
-            <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 font-bold text-sm">
-              [ Shirt Mockup Layout Box ]
-            </div>
-            <h3 className="mt-4 text-lg font-bold text-gray-900">Oversized BLR Tee</h3>
-            <p className="mt-1 text-sm text-gray-500">100% Premium Heavyweight Cotton</p>
+      <section style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ backgroundColor: "#ffffff", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", border: "1px solid #f3f4f6", padding: "24px", width: "100%", maxWidth: "20rem" }}>
+          <div style={{ width: "100%", height: "16rem", backgroundColor: "#e5e7eb", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontWeight: "bold" }}>
+            [ Shirt Mockup Layout Box ]
+          </div>
+          <h3 style={{ marginTop: "16px", fontSize: "1.125rem", fontWeight: "bold", color: "#111827" }}>Oversized BLR Tee</h3>
+          <p style={{ marginTop: "4px", fontSize: "0.875rem", color: "#6b7280" }}>100% Premium Heavyweight Cotton</p>
+          
+          <div style={{ marginTop: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+            <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "#111827" }}>₹799</span>
+            <span style={{ fontSize: "0.75rem", backgroundColor: "#d1fae5", color: "#065f46", fontWeight: "bold", padding: "4px 8px", borderRadius: "9999px" }}>
+              {cartLoaded ? "Engine Active" : "Loading Cart..."}
+            </span>
           </div>
           
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xl font-extrabold text-gray-900">₹799</span>
-              <span className="text-xs bg-green-100 text-green-800 font-semibold px-2 py-1 rounded">In Stock</span>
-            </div>
-            
-            {/* Standard React Click Handler Execution button */}
-            <button 
-              onClick={triggerCartCheckout}
-              className="w-full bg-black hover:bg-gray-800 text-white font-medium py-3 px-4 rounded-lg transition duration-200 shadow-sm text-center block cursor-pointer"
-            >
-              Add to Cart
-            </button>
-          </div>
+          <button 
+            className="snipcart-add-item"
+            data-item-id="blr-tee-01"
+            data-item-name="Oversized BLR Tee"
+            data-item-price="799"
+            data-item-url="/"
+            style={{ width: "100%", backgroundColor: "#000000", color: "#ffffff", fontWeight: 500, padding: "12px", borderRadius: "8px", border: "none", cursor: "pointer" }}
+          >
+            Add to Cart
+          </button>
         </div>
       </section>
     </main>
